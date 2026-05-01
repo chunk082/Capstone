@@ -1,20 +1,23 @@
 # TokenRedemption
 
-TokenRedemption is a Laravel/Inertia application for managing an employee token reward program. Employees can view available products, redeem products with tokens, and track their redemption requests. Admin users can manage products, users, token balances, and customer orders.
+TokenRedemption is a Laravel application for managing an employee token reward program. The employee-facing landing page and dashboard now use Inertia.js with React, while the admin area remains Blade-based. Employees can view available products, redeem products with tokens, and track their redemption requests. Admin users can manage products, users, token balances, and customer orders.
 
 ## Stack
 
 - Laravel 12
 - PHP 8.2+
-- Inertia.js
+- Inertia.js with React 19
+- Vite
 - MySQL
-- Bootstrap for admin views
+- Bootstrap for React pages and admin Blade views
 - Laravel Breeze authentication
 - `aacotroneo/laravel-saml2` for future SAML/ADFS SSO support
 
 ## Main Features
 
 - Employee login and dashboard
+- React/Inertia public landing page
+- React/Inertia employee rewards dashboard
 - Product catalog with token costs, stock, images, and availability
 - Token wallet balances
 - Product redemption flow
@@ -78,10 +81,25 @@ The app will usually be available at:
 http://127.0.0.1:8000
 ```
 
+## Frontend Structure
+
+The public employee experience is mounted through Inertia and React:
+
+- `resources/views/app.blade.php` is the Inertia root Blade view.
+- `resources/js/app.jsx` creates the React/Inertia app.
+- `resources/js/Layouts/PublicLayout.jsx` provides the shared public navigation and footer.
+- `resources/js/Pages/Home.jsx` renders `/`.
+- `resources/js/Pages/Dashboard.jsx` renders `/dashboard`, including metrics, product cards, redemption actions, and product details.
+
+Vite compiles `resources/css/app.css` and `resources/js/app.jsx` through `vite.config.js`. Keep `npm run dev` running while developing React/Inertia screens.
+
+The admin panel still uses Blade templates under `resources/views/admin` and the shared admin layout in `resources/views/layouts/admin.blade.php`.
+
 ## Important Routes
 
 Employee routes:
 
+- `/`
 - `/login`
 - `/dashboard`
 - `/profile`

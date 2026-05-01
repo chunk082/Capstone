@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.navbar-dark .navbar-nav .nav-link.login-link {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.navbar-dark .navbar-nav .nav-link.login-link:hover,
+.navbar-dark .navbar-nav .nav-link.login-link:focus {
+  color: #fff;
+}

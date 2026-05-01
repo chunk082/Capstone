@@ -133,6 +133,13 @@ Normal employee users should use:
 
 - `employee`
 
+## Demo Account Credentials
+
+Admin demo account:
+
+- Email: `admin@demo.org`
+- Password: `Testing123!`
+
 ## Order Management
 
 Orders are created when an employee redeems a product. Each order stores:

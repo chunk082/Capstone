@@ -142,6 +142,13 @@
                     <li><hr class="dropdown-divider"></li>
 
                     <li>
+                        <a class="dropdown-item" href="{{ url('/') }}">
+                            <i class="bi bi-house-door me-2"></i>
+                            Homepage
+                        </a>
+                    </li>
+
+                    <li>
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
                             <button class="dropdown-item text-danger">

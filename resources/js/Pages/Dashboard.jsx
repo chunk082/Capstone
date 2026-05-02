@@ -2,6 +2,25 @@ import PublicLayout from '../Layouts/PublicLayout';
 import { Link, usePage } from '@inertiajs/react';
 import { useMemo, useState } from 'react';
 
+function MetricCard({ icon, label, value, suffix, tone }) {
+  return (
+    <div className="col-12 col-md-6 col-xl-3">
+      <div className="metric-card h-100">
+        <div className={`metric-icon ${tone}`}>
+          <i className={`bi ${icon}`} />
+        </div>
+        <div>
+          <p>{label}</p>
+          <strong>
+            {value}
+            {suffix && <span> {suffix}</span>}
+          </strong>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const { metrics, products, flash } = usePage().props;
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -12,119 +31,121 @@ export default function Dashboard() {
   const pendingRequests = Number(metrics?.pendingRequests ?? 0);
   const productList = useMemo(() => (Array.isArray(products) ? products : []), [products]);
 
+  const metricCards = [
+    {
+      icon: 'bi-wallet2',
+      label: 'Current Balance',
+      value: currentBalance,
+      suffix: 'Tokens',
+      tone: 'blue',
+    },
+    {
+      icon: 'bi-arrow-up-right',
+      label: 'Earned This Month',
+      value: earnedThisMonth,
+      suffix: 'Tokens',
+      tone: 'green',
+    },
+    {
+      icon: 'bi-bag-check',
+      label: 'Redeemed This Month',
+      value: redeemedThisMonth,
+      suffix: 'Tokens',
+      tone: 'amber',
+    },
+    {
+      icon: 'bi-clock-history',
+      label: 'Pending Requests',
+      value: pendingRequests,
+      tone: 'red',
+    },
+  ];
+
   return (
     <PublicLayout title="Dashboard">
-      <section className="py-4 py-md-5">
-        <div className="container">
-          <div className="mb-4">
-            <div>
-              <h1 className="h3 mb-1">Dashboard</h1>
-              <p className="text-muted mb-0">Your rewards activity at a glance.</p>
-            </div>
-          </div>
-
+      <section className="dashboard-section">
+        <div className="container app-container">
           <div className="row g-3">
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="card border-0 shadow-sm h-100">
-                <div className="card-body">
-                  <p className="text-muted small mb-1">Current Balance</p>
-                  <h4 className="mb-0">{currentBalance} Tokens</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="card border-0 shadow-sm h-100">
-                <div className="card-body">
-                  <p className="text-muted small mb-1">Earned This Month</p>
-                  <h4 className="mb-0">{earnedThisMonth} Tokens</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="card border-0 shadow-sm h-100">
-                <div className="card-body">
-                  <p className="text-muted small mb-1">Redeemed This Month</p>
-                  <h4 className="mb-0">{redeemedThisMonth} Tokens</h4>
-                </div>
-              </div>
-            </div>
-            <div className="col-12 col-md-6 col-lg-3">
-              <div className="card border-0 shadow-sm h-100">
-                <div className="card-body">
-                  <p className="text-muted small mb-1">Pending Requests</p>
-                  <h4 className="mb-0">{pendingRequests}</h4>
-                </div>
-              </div>
-            </div>
+            {metricCards.map((metric) => (
+              <MetricCard key={metric.label} {...metric} />
+            ))}
           </div>
 
           {(flash?.success || flash?.error) && (
             <div className="mt-4">
-              {flash?.success && <div className="alert alert-success mb-2">{flash.success}</div>}
-              {flash?.error && <div className="alert alert-danger mb-2">{flash.error}</div>}
+              {flash?.success && <div className="alert alert-success app-alert mb-2">{flash.success}</div>}
+              {flash?.error && <div className="alert alert-danger app-alert mb-2">{flash.error}</div>}
             </div>
           )}
 
-          <div className="d-flex align-items-center justify-content-between mt-5 mb-3">
-            <h2 className="h4 mb-0">Available Products</h2>
-            <small className="text-muted">{productList.length} item(s)</small>
+          <div className="products-heading">
+            <div>
+              <span className="eyebrow">Catalog</span>
+              <h2>Available Products</h2>
+            </div>
+            <span className="catalog-count">{productList.length} item(s)</span>
           </div>
 
           {productList.length === 0 && (
-            <div className="card border-0 shadow-sm">
-              <div className="card-body py-4 text-muted">No products are available right now.</div>
+            <div className="empty-state">
+              <i className="bi bi-box-seam" />
+              <span>No products are available right now.</span>
             </div>
           )}
 
-          <div className="row g-3">
+          <div className="row g-3 g-xl-4">
             {productList.map((product) => {
-              const canRedeem = currentBalance >= Number(product.token_cost) && Number(product.stock) > 0;
+              const tokenCost = Number(product.token_cost);
+              const stock = Number(product.stock);
+              const canRedeem = currentBalance >= tokenCost && stock > 0;
 
               return (
                 <div key={product.id} className="col-12 col-md-6 col-xl-4">
-                  <div className="card border-0 shadow-sm h-100">
-                    <div style={{ height: '220px' }} className="bg-light border-bottom">
+                  <article className="product-card h-100">
+                    <div className="product-image">
                       {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-100 h-100"
-                          style={{ objectFit: 'cover' }}
-                        />
+                        <img src={product.image_url} alt={product.name} />
                       ) : (
-                        <div className="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
-                          No image
+                        <div className="product-placeholder">
+                          <i className="bi bi-image" />
+                          <span>No image</span>
                         </div>
                       )}
+                      <span className="stock-pill">{stock} in stock</span>
                     </div>
 
-                    <div className="card-body d-flex flex-column">
-                      <h5 className="card-title mb-1">{product.name}</h5>
-                      <p className="text-muted small mb-3">
-                        {Number(product.token_cost)} tokens • {Number(product.stock)} in stock
-                      </p>
+                    <div className="product-body">
+                      <div>
+                        <h3>{product.name}</h3>
+                        <p>
+                          <i className="bi bi-coin" />
+                          {tokenCost} tokens
+                        </p>
+                      </div>
 
-                      <div className="mt-auto d-flex gap-2">
+                      <div className="product-actions">
                         <Link
                           href={`/products/${product.id}/redeem`}
                           method="post"
                           as="button"
-                          className="btn btn-primary btn-sm flex-fill"
+                          className="btn app-btn app-btn-primary flex-fill"
                           disabled={!canRedeem}
                         >
-                          {canRedeem ? 'Redeem' : 'Not Enough Tokens'}
+                          <i className="bi bi-bag-check" />
+                          {canRedeem ? 'Redeem' : 'Need More'}
                         </Link>
 
                         <button
                           type="button"
-                          className="btn btn-outline-secondary btn-sm flex-fill"
+                          className="btn app-btn app-btn-secondary flex-fill"
                           onClick={() => setSelectedProduct(product)}
                         >
-                          View Product
+                          <i className="bi bi-eye" />
+                          Details
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 </div>
               );
             })}
@@ -133,43 +154,33 @@ export default function Dashboard() {
       </section>
 
       {selectedProduct && (
-        <div
-          className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3"
-          style={{ background: 'rgba(0,0,0,0.45)', zIndex: 1055 }}
-          onClick={() => setSelectedProduct(null)}
-        >
-          <div
-            className="bg-white rounded shadow w-100"
-            style={{ maxWidth: '640px' }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="d-flex align-items-center justify-content-between border-bottom p-3">
-              <h5 className="mb-0">{selectedProduct.name}</h5>
+        <div className="app-modal-backdrop" onClick={() => setSelectedProduct(null)}>
+          <div className="app-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="app-modal-header">
+              <div>
+                <span className="eyebrow">Product details</span>
+                <h3>{selectedProduct.name}</h3>
+              </div>
               <button
                 type="button"
-                className="btn-close"
+                className="icon-button"
                 onClick={() => setSelectedProduct(null)}
                 aria-label="Close"
-              />
-            </div>
-            <div className="p-3">
-              {selectedProduct.image_url && (
-                <img
-                  src={selectedProduct.image_url}
-                  alt={selectedProduct.name}
-                  className="w-100 rounded border mb-3"
-                  style={{ maxHeight: '280px', objectFit: 'cover' }}
-                />
-              )}
-              <p className="mb-3">{selectedProduct.description || 'No description available.'}</p>
-              <div className="small text-muted">
-                Cost: {Number(selectedProduct.token_cost)} tokens • Stock: {Number(selectedProduct.stock)}
-              </div>
-            </div>
-            <div className="border-top p-3 d-flex justify-content-end">
-              <button type="button" className="btn btn-outline-secondary" onClick={() => setSelectedProduct(null)}>
-                Close
+              >
+                <i className="bi bi-x-lg" />
               </button>
+            </div>
+            <div className="app-modal-body">
+              {selectedProduct.image_url && <img src={selectedProduct.image_url} alt={selectedProduct.name} />}
+              <p>{selectedProduct.description || 'No description available.'}</p>
+              <div className="detail-row">
+                <span>Cost</span>
+                <strong>{Number(selectedProduct.token_cost)} tokens</strong>
+              </div>
+              <div className="detail-row">
+                <span>Stock</span>
+                <strong>{Number(selectedProduct.stock)}</strong>
+              </div>
             </div>
           </div>
         </div>

@@ -8,15 +8,18 @@ export default function PublicLayout({ title, children }) {
     <>
       <Head title={title} />
 
-      <div className="min-vh-100 d-flex flex-column">
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-          <div className="container">
-            <Link className="navbar-brand fw-bold" href="/">
-              TokenReward
+      <div className="app-shell min-vh-100 d-flex flex-column">
+        <nav className="navbar navbar-expand-lg navbar-light app-nav">
+          <div className="container app-container">
+            <Link className="navbar-brand app-brand" href="/">
+              <span className="brand-mark">
+                <i className="bi bi-stars" />
+              </span>
+              <span>TokenReward</span>
             </Link>
 
             <button
-              className="navbar-toggler"
+              className="navbar-toggler app-toggler"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#mainNav"
@@ -28,10 +31,11 @@ export default function PublicLayout({ title, children }) {
             </button>
 
             <div className="collapse navbar-collapse" id="mainNav">
-              <ul className="navbar-nav ms-auto">
+              <ul className="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                 {!user && (
                   <li className="nav-item">
-                    <a className="nav-link login-link fw-semibold" href="/login">
+                    <a className="nav-link nav-action" href="/login">
+                      <i className="bi bi-box-arrow-in-right" />
                       Login
                     </a>
                   </li>
@@ -39,13 +43,19 @@ export default function PublicLayout({ title, children }) {
 
                 {user && (
                   <li className="nav-item dropdown">
-                    <button className="nav-link dropdown-toggle btn btn-link text-white text-decoration-none" data-bs-toggle="dropdown">
+                    <button className="nav-link dropdown-toggle user-chip" data-bs-toggle="dropdown">
+                      <span className="user-dot" />
                       {user.name}
                     </button>
                     <ul className="dropdown-menu dropdown-menu-end">
                       <li>
                         <a className="dropdown-item" href="/dashboard">
                           Dashboard
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item" href="/orders">
+                          Your Orders
                         </a>
                       </li>
                       <li>
@@ -71,8 +81,8 @@ export default function PublicLayout({ title, children }) {
 
         <main className="flex-grow-1">{children}</main>
 
-        <footer className="bg-dark text-white text-center py-3 mt-auto">
-          <div className="container">
+        <footer className="app-footer text-center py-3 mt-auto">
+          <div className="container app-container">
             <small>&copy; {new Date().getFullYear()} TokenReward</small>
           </div>
         </footer>

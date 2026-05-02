@@ -65,6 +65,35 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/orders', function () {
+        $orders = Order::query()
+            ->with('product')
+            ->where('user_id', auth()->id())
+            ->latest()
+            ->get()
+            ->map(fn (Order $order) => [
+                'id' => $order->id,
+                'transaction_id' => $order->transaction_id,
+                'tokens_spent' => (int) $order->tokens_spent,
+                'status' => $order->status,
+                'tracking_number' => $order->tracking_number,
+                'created_at' => $order->created_at?->toISOString(),
+                'updated_at' => $order->updated_at?->toISOString(),
+                'product' => $order->product
+                    ? [
+                        'id' => $order->product->id,
+                        'name' => $order->product->name,
+                        'description' => $order->product->description,
+                        'image_url' => $order->product->image_url,
+                    ]
+                    : null,
+            ]);
+
+        return Inertia::render('Orders', [
+            'orders' => $orders,
+        ]);
+    })->middleware('verified')->name('orders.index');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

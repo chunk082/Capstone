@@ -1,6 +1,6 @@
 # TokenRedemption
 
-TokenRedemption is a Laravel application for managing an employee token reward program. The employee-facing landing page and dashboard now use Inertia.js with React, while the admin area remains Blade-based. Employees can view available products, redeem products with tokens, and track their redemption requests. Admin users can manage products, users, token balances, and customer orders.
+TokenRedemption is a Laravel application for managing an employee token reward program. The employee-facing landing page, dashboard, and order-status page use Inertia.js with React, while the admin area remains Blade-based. Employees can view available products, redeem products with tokens, and track their redemption requests. Admin users can manage products, users, token balances, and customer orders.
 
 ## Stack
 
@@ -18,9 +18,11 @@ TokenRedemption is a Laravel application for managing an employee token reward p
 - Employee login and dashboard
 - React/Inertia public landing page
 - React/Inertia employee rewards dashboard
+- React/Inertia employee order-status page
 - Product catalog with token costs, stock, images, and availability
 - Token wallet balances
 - Product redemption flow
+- Employee order history with status, transaction ID, token cost, and tracking number
 - Order creation with transaction IDs
 - Admin dashboard
 - Admin product management
@@ -90,6 +92,7 @@ The public employee experience is mounted through Inertia and React:
 - `resources/js/Layouts/PublicLayout.jsx` provides the shared public navigation and footer.
 - `resources/js/Pages/Home.jsx` renders `/`.
 - `resources/js/Pages/Dashboard.jsx` renders `/dashboard`, including metrics, product cards, redemption actions, and product details.
+- `resources/js/Pages/Orders.jsx` renders `/orders`, showing the signed-in employee's order history and status details.
 
 Vite compiles `resources/css/app.css` and `resources/js/app.jsx` through `vite.config.js`. Keep `npm run dev` running while developing React/Inertia screens.
 
@@ -102,6 +105,7 @@ Employee routes:
 - `/`
 - `/login`
 - `/dashboard`
+- `/orders`
 - `/profile`
 - `/products/{product}/redeem`
 
@@ -158,6 +162,8 @@ The admin order detail page allows staff to:
 - Update order status
 - Add or update tracking number
 - Cancel an order
+
+Employees can view their own orders through `/orders`. That route is served by Inertia/React and only loads orders where `orders.user_id` matches the authenticated user. The user dropdown in the public React layout includes a `Your Orders` link.
 
 ## Tracking Numbers
 

@@ -21,10 +21,9 @@ class UserController extends Controller
 
     return view('admin.users', compact('users'));
 }
-
+    /* Update the role of a user. */
     public function updateRole(Request $request, User $user)
     {
-        //dd($request->all());
         $request->validate([
             'role' => 'required|in:employee,hype,admin'
         ]);

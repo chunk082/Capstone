@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
+    /* Display a listing of orders with optional filtering and search. */
     public function index(Request $request)
     {
         $query = Order::with(['user', 'product']);
@@ -26,6 +27,7 @@ class OrdersController extends Controller
         return view('admin.orders', compact('orders'));
     }
 
+    /* Display the details of a specific order. */
     public function show(Order $order)
     {
         $order->load(['user', 'product']);
@@ -33,6 +35,7 @@ class OrdersController extends Controller
         return view('admin.orders-show', compact('order'));
     }
 
+    /* Update the status of an order. */
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
@@ -46,6 +49,7 @@ class OrdersController extends Controller
         return back()->with('success', 'Order status updated.');
     }
 
+    /* Update the tracking number and set status to Shipped. */
     public function updateTracking(Request $request, Order $order)
     {
         $request->validate([
@@ -60,6 +64,7 @@ class OrdersController extends Controller
         return back()->with('success', 'Tracking number updated.');
     }
 
+    /* Cancel an order by setting its status to Cancelled. */
     public function cancel(Order $order)
     {
         $order->update([

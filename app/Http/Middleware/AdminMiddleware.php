@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class AdminMiddleware
 {
+    /**
+     * Handle an incoming request and ensure the user is an admin or hype.
+     */
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check()) {

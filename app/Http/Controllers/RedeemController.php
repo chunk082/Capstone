@@ -12,6 +12,9 @@ use Illuminate\Validation\ValidationException;
 
 class RedeemController extends Controller
 {
+    /*
+    * Handle the redeem request for a product.
+    */
     public function store(Product $product): RedirectResponse
     {
         $userId = auth()->id();

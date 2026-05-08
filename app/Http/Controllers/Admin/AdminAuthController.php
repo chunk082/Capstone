@@ -14,6 +14,9 @@ class AdminAuthController extends Controller
         return view('admin.index');
     }
 
+    /**
+     * Handle the admin login request.
+     */
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');

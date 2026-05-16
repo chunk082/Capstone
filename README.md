@@ -64,11 +64,13 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Run migrations:
+Import the included database dump:
 
 ```bash
-php artisan migrate
+mysql -u root -p tokenredemption < database/TokenRedemption.sql
 ```
+
+If you are using phpMyAdmin or cPanel, create the database first, then import `database/TokenRedemption.sql` through the Import tab.
 
 Start the development servers:
 
